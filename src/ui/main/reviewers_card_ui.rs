@@ -4,7 +4,7 @@ use dioxus::prelude::*;
 #[inline_props]
 pub fn ReviewersCard<'a>(cx: Scope, card: &'a ReviewCard) -> Element {
     render! {
-        li { class: "swiper-slide",
+        li { class: "",
             div { class: "flex flex-col gap-5 bg-primaryColor dark:bg-darkColor rounded-lg p-6",
                 p { class: "paragraph", "{card.paragraph}" }
                 div { class: "flex items-center",
