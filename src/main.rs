@@ -3,6 +3,7 @@
 mod models;
 mod ui;
 // import the prelude to get access to the `rsx!` macro and the `Scope` and `Element` types
+use chrono::Datelike;
 use dioxus::prelude::*;
 use models::food_cards::{BEVERAGE, BURGERS, SNACKS};
 use models::review_card::REVIEWERS;
@@ -27,8 +28,8 @@ fn App(cx: Scope) -> Element {
             nav { class: "container relative h-14 flex justify-between items-center",
                 div {
                     a { href: "#", class: "text-2xl uppercase font-oswald",
-                        "Bur"
-                        span { class: "text-2xl uppercase text-secondaryColor", "ger" }
+                        "Crab"
+                        span { class: "text-2xl uppercase text-secondaryColor", "Burger" }
                     }
                 }
 
@@ -84,7 +85,7 @@ fn App(cx: Scope) -> Element {
                         alt: "home image"
                     } }
                     div { class: "text-center md:basis-1/2 md:text-start lg:basis-3/5",
-                        h1 { class: "home__title", "HAPPY TUMMY WITH TASTY BURGER." }
+                        h1 { class: "home__title", "HAPPY TUMMY WITH TASTY CRABBURGER." }
                         div { class: "separator mx-auto md:mx-0" }
                         p { class: "paragraph",
                             "The ultimate destination for burger fans who want to indulge in mouth-watering and satisfying burgers. We use only fresh and quality ingredients to make our burgers, and we offer a variety of options to suit your taste. Come and visit us today, or order online and get a free drink. You will love our burgers."
@@ -432,8 +433,8 @@ fn App(cx: Scope) -> Element {
                         li {
                             div { class: "space-y-3",
                                 a { class: "text-4xl font-oswald uppercase", href: "",
-                                    "Bur"
-                                    span { class: "text-secondaryColor", "ger" }
+                                    "Crab"
+                                    span { class: "text-secondaryColor", "Burger" }
                                 }
                                 p { class: "text-sm",
                                     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo."
@@ -535,7 +536,9 @@ fn App(cx: Scope) -> Element {
                     }
                     div { class: "flex flex-col items-center border-t border-primaryColorLight py-5 md:flex-row md:justify-between",
                         p { class: "paragraph", "Burger Template Kit by Light Code" }
-                        p { class: "paragraph", "Copyright © 2023. All rights reserved." }
+                        p { class: "paragraph",
+                            "Copyright © {chrono::Utc::now().year()}. All rights reserved."
+                        }
                     }
                 }
             }
