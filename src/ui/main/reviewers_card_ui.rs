@@ -1,7 +1,7 @@
 use crate::models::review_card::ReviewCard;
 use dioxus::prelude::*;
 
-#[inline_props]
+#[component]
 pub fn ReviewersCard<'a>(cx: Scope, card: &'a ReviewCard) -> Element {
     render! {
         li { class: "",

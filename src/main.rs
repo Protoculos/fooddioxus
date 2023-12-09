@@ -21,10 +21,68 @@ fn App(cx: Scope) -> Element {
     let menu = vec!["Home", "About", "Menu", "Review", "Contact"];
     let tabs = vec!["All", "Food", "Snack", "Beverage"];
     let selected_snippet = use_state(cx, || 0);
+    // eval for hidden and visible button when scroll
+    let eval_provider = use_eval(cx);
+    let button_visible = use_state(cx, || "hidden");
+    use_future(cx, (), |_| {
+        to_owned![eval_provider, button_visible];
+        async move {
+            let eval = eval_provider(
+                r#"
+                let button = "";                
+                window.addEventListener('scroll', () => {
+                  if (window.pageYOffset < 600 ) {
+                    button = "hidden";                    
+                  } else {
+                    button = "visible";                    
+                  }              
+                  dioxus.send(button);    
+                });   
+                "#,
+            )
+            .unwrap();
+            while let Ok(res) = eval.recv().await {
+                if res == "hidden" {
+                    button_visible.set("hidden");
+                } else {
+                    button_visible.set("visible");
+                }
+            }
+        }
+    });
+    // eval for hidden and visible border for header when scroll
+    let eval_border = use_eval(cx);
+    let header_border_visible = use_state(cx, || "");
+    use_future(cx, (), |_| {
+        to_owned![eval_border, header_border_visible];
+        async move {
+            let eval = eval_border(
+                r#"
+                let header_border = "";                
+                window.addEventListener('scroll', () => {
+                  if (window.pageYOffset < 50 ) {
+                    header_border = "hidden";                    
+                  } else {
+                    header_border = "visible";                    
+                  }              
+                  dioxus.send(header_border);    
+                });   
+                "#,
+            )
+            .unwrap();
+            while let Ok(res) = eval.recv().await {
+                if res == "hidden" {
+                    header_border_visible.set("");
+                } else {
+                    header_border_visible.set("border-b border-secondaryColor");
+                }
+            }
+        }
+    });
 
     render! {
         // Header ----------------------------------
-        header { class: "bg-primaryColor fixed top-0 left-0 w-full z-50",
+        header { class: "bg-primaryColor fixed top-0 left-0 w-full z-50 {header_border_visible}",
             nav { class: "container relative h-14 flex justify-between items-center",
                 div {
                     a { href: "#", class: "text-2xl uppercase font-oswald",
@@ -546,7 +604,7 @@ fn App(cx: Scope) -> Element {
         // Scroll
         a {
             // Scroll
-            class: "fixed right-4 bottom-4 h-11 w-11 bg-secondaryColor shadow-sm flex rounded-full text-lg text-blackColor z-50 hover:-translate-y-1 ease-in duration-200 items-center justify-center",
+            class: "fixed {button_visible} right-4 bottom-4 h-11 w-11 bg-secondaryColor shadow-sm flex rounded-full text-lg text-blackColor z-50 hover:-translate-y-1 ease-in duration-200 items-center justify-center",
             href: "#",
             svg {
                 class: "fill-current h-6 w-6 text-blackColor",

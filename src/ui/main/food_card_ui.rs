@@ -1,7 +1,7 @@
 use crate::models::food_cards::Card;
 use dioxus::prelude::*;
 
-#[inline_props]
+#[component]
 pub fn FoodCard<'a>(cx: Scope, card: &'a Card) -> Element {
     render! {
         li { class: "item_wrap",
