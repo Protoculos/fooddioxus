@@ -21,6 +21,8 @@ fn App(cx: Scope) -> Element {
     let menu = vec!["Home", "About", "Menu", "Review", "Contact"];
     let tabs = vec!["All", "Food", "Snack", "Beverage"];
     let selected_snippet = use_state(cx, || 0);
+    let selected_menu = use_state(cx, || 0);
+    let dark_state = use_state(cx, || false);
     // eval for hidden and visible button when scroll
     let eval_provider = use_eval(cx);
     let button_visible = use_state(cx, || "hidden");
@@ -86,22 +88,35 @@ fn App(cx: Scope) -> Element {
             nav { class: "container relative h-14 flex justify-between items-center",
                 div {
                     a { href: "#", class: "text-2xl uppercase font-oswald",
-                        "Crab"
+                        "Crabs"
                         span { class: "text-2xl uppercase text-secondaryColor", "Burger" }
                     }
                 }
 
                 div { class: "{menu_hidden} absolute top-0 left-0 w-full py-14 bg-primaryColor border-b border-secondaryColor md:block md:static md:py-0 md:border-none md:w-auto md:ml-auto",
                     ul { class: "flex flex-col text-center gap-5 md:flex-row",
-                        for item in menu {
-                            li { onclick: move |_| { menu_hidden.set("hidden".to_string()) },
-                                a {
-                                    class: " hover:text-secondaryColor ease-in duration-200",
-                                    href: "#{item.to_lowercase()}",
-                                    "{item}"
-                                }
+                        menu.iter().enumerate().map(|(id, _)| {
+                        let selected = **selected_menu == id;
+
+                        let bg_selected = match selected {
+                            true => "text-secondaryColor ease-in duration-200",
+                            false => "hover:text-secondaryColor ease-in duration-200",
+                        };
+
+                        render! {
+                            li {
+                            onclick: move |_| {
+                                selected_menu.set(id);
+                                // hidden open menu from mobile
+                                menu_hidden.set("hidden".to_string())},
+                            a {
+                                class: "{bg_selected}",
+                                href: "#{menu[id].to_lowercase()}",
+                                "{menu[id]}"
                             }
+
                         }
+                        }})
                     }
                     div {
                         class: "absolute top-[0.7rem] right-4 cursor-pointer md:hidden",
@@ -114,18 +129,36 @@ fn App(cx: Scope) -> Element {
                         }
                     }
                 }
-                div { class: "flex items-center gap-5",
-                    svg {
-                        class: "cursor-pointer ml-4 h-6 w-6 fill-current text-white",
-                        xmlns: "http://www.w3.org/2000/svg",
-                        view_box: "0 0 24 24",
-                        path { d: "M10 7a7 7 0 0 0 12 4.9v.1c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2h.1A6.98 6.98 0 0 0 10 7Zm-6 5a8 8 0 0 0 15.062 3.762A9 9 0 0 1 8.238 4.938 7.999 7.999 0 0 0 4 12Z" }
+                div { class: "flex flex-row items-center gap-5",
+                    div { onclick: move |_| { dark_state.set(!dark_state) },
+
+                        if **dark_state  {
+                            render!{
+                                svg {
+                                    class: "cursor-pointer ml-4 h-6 w-6 fill-current text-white",
+                                    xmlns: "http://www.w3.org/2000/svg",
+                                    view_box: "0 -960 960 960",
+                                    // sun icon
+                                    path {d: "M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z"}}
+                            }
+                        } else {
+                            render!{
+                                svg {
+                                class: "cursor-pointer ml-4 h-6 w-6 fill-current text-white",
+                                xmlns: "http://www.w3.org/2000/svg",
+                                view_box: "0 0 24 24",
+                                // moon icon
+                                path { d: "M10 7a7 7 0 0 0 12 4.9v.1c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2h.1A6.98 6.98 0 0 0 10 7Zm-6 5a8 8 0 0 0 15.062 3.762A9 9 0 0 1 8.238 4.938 7.999 7.999 0 0 0 4 12Z" }
+                                }
+                            }
+                        }
                     }
                     div { onclick: move |_| { menu_hidden.set("".to_string()) },
                         svg {
                             class: "cursor-pointer ml-4 h-6 w-6 fill-current text-white md:hidden",
                             xmlns: "http://www.w3.org/2000/svg",
                             view_box: "0 0 24 24",
+                            // hamburger icon
                             path { d: "M3 4h18v2H3V4Zm0 7h12v2H3v-2Zm0 7h18v2H3v-2Z" }
                         }
                     }
@@ -143,7 +176,7 @@ fn App(cx: Scope) -> Element {
                         alt: "home image"
                     } }
                     div { class: "text-center md:basis-1/2 md:text-start lg:basis-3/5",
-                        h1 { class: "home__title", "HAPPY TUMMY WITH TASTY CRABBURGER." }
+                        h1 { class: "home__title", "HAPPY TUMMY WITH TASTY CRABSBURGER." }
                         div { class: "separator mx-auto md:mx-0" }
                         p { class: "paragraph",
                             "The ultimate destination for burger fans who want to indulge in mouth-watering and satisfying burgers. We use only fresh and quality ingredients to make our burgers, and we offer a variety of options to suit your taste. Come and visit us today, or order online and get a free drink. You will love our burgers."
@@ -358,7 +391,6 @@ fn App(cx: Scope) -> Element {
                                         onclick: move |_| selected_snippet.set(id),
                                         "{tabs[id]}",
                                     }
-
                                     }
                                 })
                             }
@@ -491,7 +523,7 @@ fn App(cx: Scope) -> Element {
                         li {
                             div { class: "space-y-3",
                                 a { class: "text-4xl font-oswald uppercase", href: "",
-                                    "Crab"
+                                    "Crabs"
                                     span { class: "text-secondaryColor", "Burger" }
                                 }
                                 p { class: "text-sm",
@@ -593,7 +625,10 @@ fn App(cx: Scope) -> Element {
                         }
                     }
                     div { class: "flex flex-col items-center border-t border-primaryColorLight py-5 md:flex-row md:justify-between",
-                        p { class: "paragraph", "Burger Template Kit by Light Code" }
+                        p { class: "paragraph",
+                            "CrabsBurger Template Kit with ❤️ to "
+                            a { href: "https://dioxuslabs.com/", alt: "Dioxus labs", "Dioxus" }
+                        }
                         p { class: "paragraph",
                             "Copyright © {chrono::Utc::now().year()}. All rights reserved."
                         }
@@ -605,6 +640,7 @@ fn App(cx: Scope) -> Element {
         a {
             // Scroll
             class: "fixed {button_visible} right-4 bottom-4 h-11 w-11 bg-secondaryColor shadow-sm flex rounded-full text-lg text-blackColor z-50 hover:-translate-y-1 ease-in duration-200 items-center justify-center",
+            onclick: move |_| { selected_menu.set(0) },
             href: "#",
             svg {
                 class: "fill-current h-6 w-6 text-blackColor",
