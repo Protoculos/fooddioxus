@@ -453,6 +453,8 @@ dependencies = [
  "chrono",
  "dioxus",
  "dioxus-web",
+ "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]

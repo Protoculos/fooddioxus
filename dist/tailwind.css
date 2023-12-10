@@ -455,6 +455,11 @@ body{
   color: rgb(255 255 255 / var(--tw-text-opacity));
 }
 
+:is(.dark body){
+  --tw-border-opacity: 1;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity));
+}
+
 section{
   padding-top: 4rem;
   padding-bottom: 1rem;
