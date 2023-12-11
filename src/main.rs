@@ -82,16 +82,65 @@ fn App(cx: Scope) -> Element {
             }
         }
     });
+
     // dark state
-    let dark = use_state(cx, || "");
-    use_effect(cx, &(*dark.get(),), |(dark,)| async move {
+    // let eval_dark = use_eval(cx);
+    // let dark = use_state(cx, || "");
+    // use_future(cx, (), |_| {
+    //     to_owned![eval_dark, dark];
+    //     async move {
+    //         let eval = eval_dark(
+    //             r#"
+    //             const html = document.querySelector("html");
+    //             const themeBtn = document.getElementById("theme-toggle");
+
+    //                 if (localStorage.getItem("mode") == "dark") {
+    //                 darkMode();
+    //                 } else {
+    //                 lightMode();
+    //                 }
+
+    //                 themeBtn.addEventListener("click", (e) => {
+    //                 if (localStorage.getItem("mode") == "light") {
+    //                     darkMode();
+    //                 } else {
+    //                     lightMode();
+    //                 }
+    //                 });
+
+    //                 function darkMode() {
+    //                 html.classList.add("dark");
+    //                 themeBtn.classList.replace("ri-moon-line", "ri-sun-line");
+    //                 localStorage.setItem("mode", "dark");
+    //                 }
+
+    //                 function lightMode() {
+    //                 html.classList.remove("dark");
+    //                 themeBtn.classList.replace("ri-sun-line", "ri-moon-line");
+    //                 localStorage.setItem("mode", "light");
+    //                 }
+    //             "#,
+    //         )
+    //         .unwrap();
+    //         while let Ok(res) = eval.recv().await {
+    //             if res == "hidden" {
+    //                 dark.set("");
+    //             } else {
+    //                 dark.set("border-b border-secondaryColor");
+    //             }
+    //         }
+    //     }
+    // });
+
+    let dark = if **dark_state { "dark" } else { "" };
+    use_effect(cx, (&dark,), |(dark,)| async move {
         web_sys::window()
             .unwrap()
             .document()
             .unwrap()
-            .get_element_by_id("html")
+            .document_element()
             .unwrap()
-            .set_attribute("class", "{dark}")
+            .set_attribute("class", &(format!("{dark}")));
     });
 
     render! {
@@ -145,7 +194,6 @@ fn App(cx: Scope) -> Element {
                     div { onclick: move |_| { dark_state.set(!dark_state) },
 
                         if **dark_state  {
-                            dark.set("Dark");
                             render!{
                                 svg {
                                     class: "cursor-pointer ml-4 h-6 w-6 fill-current text-white",
@@ -155,7 +203,6 @@ fn App(cx: Scope) -> Element {
                                     path {d: "M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z"}}
                             }
                         } else {
-                            dark.set("");
                             render!{
                                 svg {
                                 class: "cursor-pointer ml-4 h-6 w-6 fill-current text-white",

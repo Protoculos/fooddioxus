@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Nunito:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Nunito:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap');
 
 /*
 ! tailwindcss v3.3.6 | MIT License | https://tailwindcss.com
@@ -456,8 +456,8 @@ body{
 }
 
 :is(.dark body){
-  --tw-border-opacity: 1;
-  border-color: rgb(0 0 0 / var(--tw-border-opacity));
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
 }
 
 section{
@@ -1129,8 +1129,8 @@ section{
 }
 
 .home__title,
-  .card__title,
-  .section__title{
+    .card__title,
+    .section__title{
   font-family: Oswald, sans-serif;
   font-size: 2.25rem;
   line-height: 2.5rem;
@@ -1140,8 +1140,8 @@ section{
 
 @media (min-width: 1024px){
   .home__title,
-  .card__title,
-  .section__title{
+    .card__title,
+    .section__title{
     font-size: 3.75rem;
     line-height: 1;
   }
@@ -1355,4 +1355,3 @@ section{
     gap: 3rem;
   }
 }
-
