@@ -1,4 +1,4 @@
-use crate::models::review_card::ReviewCard;
+use crate::model::review_card::ReviewCard;
 use dioxus::prelude::*;
 
 #[component]

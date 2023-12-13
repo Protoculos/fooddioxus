@@ -1,8 +1,8 @@
-use crate::models::food_cards::Card;
+use crate::model::food_card::FoodCard;
 use dioxus::prelude::*;
 
 #[component]
-pub fn FoodCard<'a>(cx: Scope, card: &'a Card) -> Element {
+pub fn FoodCard<'a>(cx: Scope, card: &'a FoodCard) -> Element {
     render! {
         li { class: "item_wrap",
             div { class: "h-56 grid place-items-center bg-primaryColorLight dark:bg-darkColorLight rounded-3xl hover:bg-secondaryColor ease-linear duration-200 lg:h-40",
