@@ -132,6 +132,7 @@ fn App(cx: Scope) -> Element {
     //     }
     // });
 
+    // add class dark to html teg
     let dark = if **dark_state { "dark" } else { "" };
     use_effect(cx, (&dark,), |(dark,)| async move {
         web_sys::window()
@@ -142,10 +143,32 @@ fn App(cx: Scope) -> Element {
             .unwrap()
             .set_attribute("class", &(format!("{dark}")));
     });
+    // add dark mode to localstorage
+    // let local_storage = use_eval(cx);
+    // use_future(cx, (), |_| {
+    //     to_owned![local_storage, dark_state];
+    //     async move {
+    //         if *dark_state.get() {
+    //             local_storage(
+    //                 r#"
+    //              localStorage.setItem("mode", "dark");
+    //             "#,
+    //             )
+    //             .unwrap();
+    //         } else {
+    //             local_storage(
+    //                 r#"
+    //              localStorage.setItem("mode", "lightqq");
+    //             "#,
+    //             )
+    //             .unwrap();
+    //         }
+    //     }
+    // });
 
     render! {
         // Header ----------------------------------
-        header { class: "bg-primaryColor fixed top-0 left-0 w-full z-50 {header_border_visible}",
+        header { class: "bg-primaryColor dark:bg-darkColor fixed top-0 left-0 w-full z-50 {header_border_visible}",
             nav { class: "container relative h-14 flex justify-between items-center",
                 div {
                     a { href: "#", class: "text-2xl uppercase font-oswald",
@@ -154,7 +177,7 @@ fn App(cx: Scope) -> Element {
                     }
                 }
 
-                div { class: "{menu_hidden} absolute top-0 left-0 w-full py-14 bg-primaryColor border-b border-secondaryColor md:block md:static md:py-0 md:border-none md:w-auto md:ml-auto",
+                div { class: "{menu_hidden} absolute top-0 left-0 w-full py-14 bg-primaryColor dark:bg-darkColor border-b border-secondaryColor md:block md:static md:py-0 md:border-none md:w-auto md:ml-auto",
                     ul { class: "flex flex-col text-center gap-5 md:flex-row",
                         menu.iter().enumerate().map(|(id, _)| {
                         let selected = **selected_menu == id;
@@ -191,9 +214,14 @@ fn App(cx: Scope) -> Element {
                     }
                 }
                 div { class: "flex flex-row items-center gap-5",
-                    div { onclick: move |_| { dark_state.set(!dark_state) },
+                    div {
+                        onclick: move |_| {
+                            dark_state.set(!dark_state);
+                            change_local_storage(cx, dark_state);
+                        },
 
                         if **dark_state  {
+
                             render!{
                                 svg {
                                     class: "cursor-pointer ml-4 h-6 w-6 fill-current text-white",
@@ -203,6 +231,7 @@ fn App(cx: Scope) -> Element {
                                     path {d: "M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-97 57-59 96 100-52 56Zm492 496-97-101 53-55 101 97-57 59Zm-98-550 97-101 59 57-100 96-56-52ZM154-212l101-97 55 53-97 101-59-57Zm326-268Z"}}
                             }
                         } else {
+
                             render!{
                                 svg {
                                 class: "cursor-pointer ml-4 h-6 w-6 fill-current text-white",
@@ -338,7 +367,7 @@ fn App(cx: Scope) -> Element {
             section { id: "promo",
                 div { class: "container flex flex-col gap-5 lg:gap-10 lg:flex-row",
                     // card 1
-                    div { class: "bg-primaryColorLight flex flex-col p-5 rounded-lg md:flex-row md:items-center lg:flex-row-reverse lg:flex-1",
+                    div { class: "bg-primaryColorLight dark:bg-darkColorLight flex flex-col p-5 rounded-lg md:flex-row md:items-center lg:flex-row-reverse lg:flex-1",
                         img {
                             class: "w-40 mx-auto hover:animate-movingY md:mx-5",
                             src: "images/promo-1.png",
@@ -354,7 +383,7 @@ fn App(cx: Scope) -> Element {
                         }
                     }
                     // card 2
-                    div { class: "bg-primaryColorLight flex flex-col p-5 rounded-lg md:flex-row md:items-center lg:flex-row-reverse lg:flex-1",
+                    div { class: "bg-primaryColorLight dark:bg-darkColorLight flex flex-col p-5 rounded-lg md:flex-row md:items-center lg:flex-row-reverse lg:flex-1",
                         img {
                             class: "w-40 mx-auto hover:animate-movingY  md:mx-5",
                             src: "images/promo-2.png",
@@ -444,8 +473,8 @@ fn App(cx: Scope) -> Element {
                                     let selected = **selected_snippet == id;
 
                                     let bg_selected = match selected {
-                                        true => "btn bg-secondaryColorLight active",
-                                        false => "btn bg-primaryColorLight",
+                                        true => "btn bg-secondaryColorLight dark:bg-darkColorLight active",
+                                        false => "btn bg-primaryColorLight dark:bg-darkColorLight",
                                     };
                                     render! {
                                         li { class: "{bg_selected}",
@@ -524,7 +553,11 @@ fn App(cx: Scope) -> Element {
                 }
             }
             // Review
-            section { id: "review", class: "bg-primaryColorLight py-20",
+            section {
+                // Review
+                id: "review",
+                // Review
+                class: "bg-primaryColorLight dark:bg-darkColorLight py-20",
                 div { class: "container",
                     div { class: "max-w-md mx-auto text-center",
                         h2 { class: "section__title", "CUSTOMER REVIEW" }
@@ -685,7 +718,7 @@ fn App(cx: Scope) -> Element {
                             }
                         }
                     }
-                    div { class: "flex flex-col items-center border-t border-primaryColorLight py-5 md:flex-row md:justify-between",
+                    div { class: "flex flex-col items-center border-t border-primaryColorLight dark:border-darkColorLight py-5 md:flex-row md:justify-between",
                         p { class: "paragraph",
                             "CrabsBurger Template Kit with ❤️ to "
                             a { href: "https://dioxuslabs.com/", alt: "Dioxus labs", "Dioxus" }
@@ -711,4 +744,29 @@ fn App(cx: Scope) -> Element {
             }
         }
     }
+}
+
+fn change_local_storage(cx: &Scoped<'_>, state: &UseState<bool>) {
+    // add dark mode to localstorage
+    let local_storage = use_eval(cx);
+    use_future(cx, (), |_| {
+        to_owned![local_storage, state];
+        async move {
+            if *state.get() {
+                local_storage(
+                    r#"
+                 localStorage.setItem("node", "dark");  
+                "#,
+                )
+                .unwrap();
+            } else {
+                local_storage(
+                    r#"
+                 localStorage.setItem("mode", "light777");  
+                "#,
+                )
+                .unwrap();
+            }
+        }
+    });
 }
